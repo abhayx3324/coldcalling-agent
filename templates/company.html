@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Product Information</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <!-- Fields for Company Name, Product Name, and Product Description -->
+        <form id="productForm">
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" name="companyName" required><br><br>
+
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="productName" required><br><br>
+
+            <label for="productDescription">Product Description:</label>
+            <textarea id="productDescription" name="productDescription" required></textarea><br><br>
+
+            <button type="submit">Save</button>
+        </form>
+
+        <script>
+            // JavaScript to handle form submission
+            document.getElementById('productForm').addEventListener('submit', function(event) {
+                event.preventDefault();  // Prevent the form from refreshing the page
+
+                // Get the values from the form fields
+                const companyName = document.getElementById('companyName').value;
+                const productName = document.getElementById('productName').value;
+                const productDescription = document.getElementById('productDescription').value;
+
+                // Prepare the data to send to the backend
+                const formData = {
+                    companyName: companyName,
+                    productName: productName,
+                    productDescription: productDescription
+                };
+
+                // Send the data to the Flask backend using fetch
+                fetch('http://localhost:5000/product', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Data sent to Flask:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending data to Flask:', error);
+                });
+            });
+        </script>
+    </body>
+</html>
