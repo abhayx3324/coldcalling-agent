@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Product Information</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!--<script src="https://cdn.tailwindcss.com"></script>-->
     </head>
     <body>
         <p id="status">Not Connected</p>
@@ -10,77 +16,102 @@
         <script>
             let mediaRecorder;
             let socket;
-            let fullTranscript = '';  // Variable to store the full transcript
-            let timeout;
-        
+
             document.getElementById('startButton').addEventListener('click', () => {
-                navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                    console.log({ stream });
-                    if (!MediaRecorder.isTypeSupported('audio/webm'))
-                        return alert('Browser not supported');
-        
-                    mediaRecorder = new MediaRecorder(stream, {
-                        mimeType: 'audio/webm',
-                    });
-                    socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
-                        'token',
-                        '3267961fc4555bd0e1e9b7536d3e333c8aade93d',
-                    ]);
-        
-                    socket.onopen = () => {
-                        document.querySelector('#status').textContent = 'Connected';
-                        console.log({ event: 'onopen' });
-                        mediaRecorder.addEventListener('dataavailable', async (event) => {
-                            if (event.data.size > 0 && socket.readyState == 1) {
-                                socket.send(event.data);
+                // Send request to Flask to start conversation
+                fetch('http://localhost:5000/start')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Display AI's message in the frontend
+                        const aiMessage = data.message;
+                        document.getElementById('transcript').textContent = aiMessage;
+
+                        // Now start the microphone for transcription
+                        navigator.mediaDevices.getUserMedia({ 
+                            audio: {
+                                deviceId: 'default',
+                                echoCancellation: true,
+                                noiseSuppression: true,
                             }
-                        });
-                        mediaRecorder.start(1000);
-                    };
-        
-                    socket.onmessage = (message) => {
-                        const received = JSON.parse(message.data);
-                        const transcript = received.channel.alternatives[0].transcript;
-                        if (transcript && received.is_final) {
-                            // Add the new transcript to the full transcript
-                            fullTranscript += ' ' + transcript;
-        
-                            // Reset the timeout to print the full transcript after 2 seconds
-                            clearTimeout(timeout);
-                            timeout = setTimeout(() => {
-                                // Send the full transcript to Flask backend
-                                fetch('http://localhost:5000/transcript', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({ transcript: fullTranscript })
+                        }).then((stream) => {
+                            console.log({ stream })
+                            if (!MediaRecorder.isTypeSupported('audio/webm'))
+                                return alert('Browser not supported')
+
+                            mediaRecorder = new MediaRecorder(stream, {
+                                mimeType: 'audio/webm',
+                            })
+
+                            const accessToken = '3267961fc4555bd0e1e9b7536d3e333c8aade93d'; // Replace with your actual access token
+                            const model = 'nova-2';
+                            const punctuate = true;
+                            const language = 'en-US';
+                            const encoding = 'linear16';
+                            const channels = 1;
+                            const sampleRate = 16000;
+                            const endpointing = 400;
+
+                            const url = new URL('wss://api.deepgram.com/v1/listen');
+                            url.searchParams.append('model', model);
+                            url.searchParams.append('punctuate', punctuate.toString());
+                            url.searchParams.append('endpointing', endpointing.toString());
+                            url.searchParams.append('language', language);
+                            url.searchParams.append('encoding', encoding);
+                            url.searchParams.append('channels', channels.toString());
+
+                            const socket = new WebSocket(url.toString(), [
+                                'token',
+                                accessToken,
+                            ]);
+
+                            socket.onopen = () => {
+                                document.querySelector('#status').textContent = 'Connected'
+                                console.log({ event: 'onopen' })
+                                mediaRecorder.addEventListener('dataavailable', async (event) => {
+                                    if (event.data.size > 0 && socket.readyState == 1) {
+                                        socket.send(event.data)
+                                    }
                                 })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log('Data sent to Flask:', data);
-                                })
-                                .catch(error => {
-                                    console.error('Error sending data to Flask:', error);
-                                });
-        
-                                // Log the full transcript (this will only happen after 2 seconds of inactivity)
-                                console.log('Full Transcript:', fullTranscript);
-        
-                                // Clear the full transcript after sending
-                                fullTranscript = '';
-                            }, 2000);  // 2 seconds delay before sending
-                        }
-                    };
-        
-                    socket.onclose = () => {
-                        console.log({ event: 'onclose' });
-                    };
-        
-                    socket.onerror = (error) => {
-                        console.log({ event: 'onerror', error });
-                    };
-                });
+                                mediaRecorder.start(1000)
+                            }
+
+                            socket.onmessage = (message) => {
+                                const received = JSON.parse(message.data)
+                                console.log(received)
+                                const transcript = received.channel.alternatives[0].transcript
+                                if (transcript && received.is_final) {
+                                    console.log(transcript)  // Log the transcript to the console
+
+                                    // Send the transcript to Flask backend
+                                    fetch('http://localhost:5000/transcript', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ transcript: transcript })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Data sent to Flask:', data)
+                                    })
+                                    .catch(error => {
+                                        console.error('Error sending data to Flask:', error)
+                                    })
+                                }
+                            }
+
+                            socket.onclose = () => {
+                                console.log({ event: 'onclose' })
+                            }
+
+                            socket.onerror = (error) => {
+                                console.log({ event: 'onerror', error })
+                            }
+                        })
+                    })
+                    .catch(error => {
+                        console.error('Error starting conversation:', error)
+                    });
             });
         </script>
     </body>
