@@ -1,17 +1,13 @@
-#app.py
 import json
-
 import os
-
-from flask import Flask, flash, request, jsonify, render_template, redirect
-from flask_cors import CORS, cross_origin
+from flask import Flask, request, jsonify, render_template, redirect
+from flask_cors import CORS  # Import CORS
 from flask_socketio import SocketIO
-
 from pdf_extractor import extract_text_from_pdf, summarize_relevant_information
 from llm import start_sales_conversation, get_ai_response
-from cartesia_tts import speak
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS globally for all routes
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 UPLOAD_FOLDER = 'UPLOADS'
@@ -19,23 +15,6 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 JSON_FILE_PATH = 'product_data.json'
-
-def genHeader(sampleRate, bitsPerSample, channels):
-    datasize = 2000*10**6
-    o = bytes("RIFF",'ascii')                                               # (4byte) Marks file as RIFF
-    o += (datasize + 36).to_bytes(4,'little')                               # (4byte) File size in bytes excluding this and RIFF marker
-    o += bytes("WAVE",'ascii')                                              # (4byte) File type
-    o += bytes("fmt ",'ascii')                                              # (4byte) Format Chunk Marker
-    o += (16).to_bytes(4,'little')                                          # (4byte) Length of above format data
-    o += (1).to_bytes(2,'little')                                           # (2byte) Format type (1 - PCM)
-    o += (channels).to_bytes(2,'little')                                    # (2byte)
-    o += (sampleRate).to_bytes(4,'little')                                  # (4byte)
-    o += (sampleRate * channels * bitsPerSample // 8).to_bytes(4,'little')  # (4byte)
-    o += (channels * bitsPerSample // 8).to_bytes(2,'little')               # (2byte)
-    o += (bitsPerSample).to_bytes(2,'little')                               # (2byte)
-    o += bytes("data",'ascii')                                              # (4byte) Data Chunk Marker
-    o += (datasize).to_bytes(4,'little')                                    # (4byte) Data size in bytes
-    return o
 
 @app.route('/save', methods=['POST'])
 def handle_product():
@@ -70,14 +49,13 @@ def handle_product():
     return jsonify({'message': 'Product information saved successfully!', 'productData': product_data}), 200
 
 @app.route('/start', methods=['GET'])
-@cross_origin()
 def start_conversation():
     global conversation_history
     conversation_history = start_sales_conversation()
     
     ai_message = "Hello! My name is Ravi. May I have your first and last name, please?"
-    speak(ai_message)  # Assuming you have a function that makes the AI speak
-    return jsonify({"message": ai_message})
+    
+    return jsonify({'status': 'success', 'message': 'Transcript received', 'response': ai_message})
 
 @app.route('/')
 def index():
@@ -87,9 +65,7 @@ def index():
 def company():
     return render_template('company.html')
 
-
 @app.route('/transcript', methods=['POST'])
-@cross_origin()
 def receive_transcript():
     global conversation_history
     
@@ -101,14 +77,12 @@ def receive_transcript():
     if not transcript:
         return jsonify({'status': 'error', 'message': 'Empty transcript'}), 400
     
-    ai_reply, conversation_history = get_ai_response(transcript, conversation_history)
+    ai_response, conversation_history = get_ai_response(transcript, conversation_history)
     
-    speak(ai_reply)
+    if not ai_response:
+        return jsonify({'status': 'error', 'message': 'Failed to get OpenAI response'}), 500
     
-    print()
-    
-    print(f"Received transcript: {transcript}")
-    return jsonify({'status': 'success', 'message': 'Transcript received'})
+    return jsonify({'status': 'success', 'message': 'Transcript received', 'response': ai_response})
 
 if __name__ == '__main__':
     app.run(debug=True)
