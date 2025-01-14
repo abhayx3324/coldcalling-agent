@@ -8,6 +8,9 @@ load_dotenv()
 # Set your OpenAI API key (use a private key)
 api_key = os.getenv("OPENAI_API_KEY")
 
+if api_key:
+    print("api key openai")
+
 client = OpenAI(
     api_key=api_key,
 )
