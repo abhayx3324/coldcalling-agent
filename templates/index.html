@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,193 +8,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="text-center">
-        <p id="status" class="text-gray-700 text-lg mb-4">Not Connected</p>
-        <button id="startButton" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition">Start Transcription</button>
-        <p id="transcript" class="mt-4 text-gray-900"></p>
-        <audio id="audioPlayer" controls class="mt-4"></audio>
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<body class="bg-stone-950 text-gray-200 min-h-screen min-w-full scroll-smooth flex flex-col" style="font-family: 'Work Sans', sans-serif; background-image: url('{{ url_for('static', filename='homebg.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <!-- Navbar -->
+    <div id="navbar" class="fixed top-0 left-0 w-full py-8 px-8 mb-2 flex justify-between backdrop-blur-sm z-50">
+        <a href="{{ url_for('index') }}" class="text-3xl inline font-bold"> CALL-E </a>
+        <div class="flex space-x-4">
+            <a href="{{ url_for('index') }}" 
+            class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">
+                Home
+            </a>
+            <a href="{{ url_for('about') }}" 
+            class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">
+                About
+            </a>
+        </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let mediaRecorder;
-            let socket;
-            let isTranscribing = false;
-            let audioStream;
 
-            document.getElementById('startButton').addEventListener('click', () => {
-                const startButton = document.getElementById('startButton');
-                
-                if (!isTranscribing) {
-                    // Start transcription
-                    fetch('http://localhost:5000/start')
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('transcript').textContent = data.message;
-
-                            document.getElementById('transcript').textContent = `AI: ${data.response}`;
-                            speakText("Hello! My name is Ravi. May I have your first and last name, please?")
-
-                            navigator.mediaDevices.getUserMedia({
-                                audio: {
-                                    deviceId: 'default',
-                                    echoCancellation: true,
-                                    noiseSuppression: true,
-                                }
-                            }).then((stream) => {
-                                audioStream = stream; // Store the stream for muting/unmuting
-
-                                if (!MediaRecorder.isTypeSupported('audio/webm'))
-                                    return alert('Browser not supported');
-
-                                mediaRecorder = new MediaRecorder(stream, {
-                                    mimeType: 'audio/webm',
-                                });
-
-                                const accessToken = '3267961fc4555bd0e1e9b7536d3e333c8aade93d'; // Replace with your actual Deepgram API key
-                                const model = 'nova-2';
-                                const punctuate = true;
-                                const language = 'en-US';
-                                const encoding = 'linear16';
-                                const channels = 1;
-                                const sampleRate = 16000;
-                                const endpointing = 400;
-
-                                const url = new URL('wss://api.deepgram.com/v1/listen');
-                                url.searchParams.append('model', model);
-                                url.searchParams.append('punctuate', punctuate.toString());
-                                url.searchParams.append('endpointing', endpointing.toString());
-                                url.searchParams.append('language', language);
-                                url.searchParams.append('encoding', encoding);
-                                url.searchParams.append('channels', channels.toString());
-
-                                socket = new WebSocket(url.toString(), [
-                                    'token',
-                                    accessToken,
-                                ]);
-
-                                socket.onopen = () => {
-                                    document.querySelector('#status').textContent = 'Connected';
-                                    mediaRecorder.addEventListener('dataavailable', (event) => {
-                                        if (event.data.size > 0 && socket.readyState === 1) {
-                                            socket.send(event.data);
-                                        }
-                                    });
-                                    mediaRecorder.start(1000);
-                                };
-
-                                socket.onmessage = (message) => {
-                                    const received = JSON.parse(message.data);
-                                    const transcript = received.channel.alternatives[0].transcript;
-                                    console.log(transcript);
-                                    if (transcript && received.is_final) {
-                                        // Send transcript to Flask backend
-                                        fetch('http://localhost:5000/transcript', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({ transcript: transcript })
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.status === 'success') {
-                                                // Display AI response
-                                                document.getElementById('transcript').textContent = `AI: ${data.response}`;
-
-                                                console.log(data.response)
-
-                                                // Mute the microphone
-                                                audioStream.getAudioTracks().forEach(track => track.enabled = false);
-
-                                                // Send AI response to Deepgram TTS
-                                                speakText(data.response);
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Error sending transcript to Flask:', error);
-                                        });
-                                    }
-                                };
-
-                                socket.onclose = () => {
-                                    console.log('WebSocket closed');
-                                };
-
-                                socket.onerror = (error) => {
-                                    console.error('WebSocket error:', error);
-                                };
-                            });
-
-                            // Update button state
-                            startButton.textContent = 'Stop Transcription';
-                            startButton.classList.remove('bg-blue-500', 'hover:bg-blue-700');
-                            startButton.classList.add('bg-red-500', 'hover:bg-red-700');
-                            isTranscribing = true;
-                        })
-                        .catch(error => {
-                            console.error('Error starting transcription:', error);
-                        });
-                } else {
-                    // Stop transcription
-                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                        mediaRecorder.stop();
-                    }
-                    if (socket && socket.readyState === 1) {
-                        socket.close();
-                    }
-
-                    fetch('http://localhost:5000/stop')
-                        .then(() => {
-                            console.log('Flask connection closed');
-                        })
-                        .catch(error => {
-                            console.error('Error stopping Flask connection:', error);
-                        });
-
-                    // Update button state
-                    startButton.textContent = 'Start Transcription';
-                    startButton.classList.remove('bg-red-500', 'hover:bg-red-700');
-                    startButton.classList.add('bg-blue-500', 'hover:bg-blue-700');
-                    document.querySelector('#status').textContent = 'Not Connected';
-                    isTranscribing = false;
-                }
-            });
-
-            // Function to send text to Deepgram TTS and play the audio
-            function speakText(text) {
-                const accessToken = '3267961fc4555bd0e1e9b7536d3e333c8aade93d'; // Replace with your actual Deepgram API key
-                const ttsUrl = 'https://api.deepgram.com/v1/speak?model=aura-asteria-en'; // Use the desired TTS model
-
-                fetch(ttsUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Token ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text: text }),
-                })
-                .then(response => response.blob())
-                .then(blob => {
-                    const audioUrl = URL.createObjectURL(blob);
-                    const audioPlayer = document.getElementById('audioPlayer');
-                    audioPlayer.src = audioUrl;
-
-                    // Play the TTS audio
-                    audioPlayer.play();
-
-                    // Unmute the microphone after the audio finishes playing
-                    audioPlayer.addEventListener('ended', () => {
-                        if (audioStream) {
-                            audioStream.getAudioTracks().forEach(track => track.enabled = true);
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error with Deepgram TTS:', error);
-                });
-            }
-        });
-    </script>
+    <!-- Full-screen Hero Section -->
+    <div class="min-h-screen w-full flex items-center justify-left relative z-10">
+        <div class="ml-24">
+            <h1 class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-300 text-8xl font-bold mb-4 rounded-lg">CALL-E</h1>
+            <p class="text-white text-2xl font-semibold rounded-lg">Welcome to CALL-E, our AI salesperson</p>
+            <a href="{{ url_for('product') }}">
+                <button class="mt-6 w-40 h-14 text-xl font-semibold bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-emerald-700 hover:to-cyan-700 transition duration-400">
+                    Try it out
+                </button>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

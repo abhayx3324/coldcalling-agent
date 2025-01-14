@@ -1,20 +1,24 @@
 import json
 import os
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS  # Import CORS
-from flask_socketio import SocketIO
 from pdf_extractor import extract_text_from_pdf, summarize_relevant_information
 from llm import start_sales_conversation, get_ai_response
 
+
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS globally for all routes
-socketio = SocketIO(app, cors_allowed_origins="*")
 
 UPLOAD_FOLDER = 'UPLOADS'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 JSON_FILE_PATH = 'product_data.json'
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.static_folder, 'favicon.ico')
 
 @app.route('/save', methods=['POST'])
 def handle_product():
@@ -53,7 +57,7 @@ def start_conversation():
     global conversation_history
     conversation_history = start_sales_conversation()
     
-    ai_message = "Hello! My name is Ravi. May I have your first and last name, please?"
+    ai_message = "Hello! My name is Pooja. May I have your first and last name, please?"
     
     return jsonify({'status': 'success', 'message': 'Transcript received', 'response': ai_message})
 
@@ -61,9 +65,17 @@ def start_conversation():
 def index():
     return render_template('index.html')
 
+@app.route('/talk')
+def talk():
+    return render_template('talk.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/product')
-def company():
-    return render_template('company.html')
+def product():
+    return render_template('product.html')
 
 @app.route('/transcript', methods=['POST'])
 def receive_transcript():

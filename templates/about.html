@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Information</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center bg-stone-950 text-gray-200 min-h-screen min-w-full scroll-smooth flex flex-col" style="font-family: 'Work Sans', sans-serif; background-image: url('{{ url_for('static', filename='homebg.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div id="navbar" class="fixed top-0 left-0 w-full py-8 px-8 mb-2 flex justify-between backdrop-blur-sm z-50">
+        <a href="{{ url_for('index') }}" class="text-3xl inline font-bold"> CALL-E </a>
+        <div class="flex space-x-4">
+            <a href="{{ url_for('index') }}" 
+            class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">
+                Home
+            </a>
+            <a href="{{ url_for('about') }}" 
+            class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">
+                About
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-28 mb-4 p-4 text-left bg-stone-800 min-h-14 w-2/3 rounded-xl text-stone-200 space-y-2">
+        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
+        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+
+        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
+        <ul class="list-disc list-inside mb-4">
+            <li class="text-stone-300">Easy to read and write</li>
+            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
+            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
+        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
+        <p class="text-stone-200 mb-4">And a code block:</p>
+
+        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
+        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+
+        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
+        <ul class="list-disc list-inside mb-4">
+            <li class="text-stone-300">Easy to read and write</li>
+            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
+            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
+        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
+        <p class="text-stone-200 mb-4">And a code block:</p>
+
+        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
+        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+
+        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
+        <ul class="list-disc list-inside mb-4">
+            <li class="text-stone-300">Easy to read and write</li>
+            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
+            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
+        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
+        <p class="text-stone-200 mb-4">And a code block:</p>
+
+        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
+        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+
+        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
+        <ul class="list-disc list-inside mb-4">
+            <li class="text-stone-300">Easy to read and write</li>
+            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
+            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
+        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
+        <p class="text-stone-200 mb-4">And a code block:</p>
+    </div>
+
+    <div class="py-8 my-4 z-20 min-h-screen">
+        <div class="container mx-auto text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="https://github.com/abhayx3324" target="_blank" class="hover:text-fuchsia-500">
+                    <i class="fab fa-github text-2xl"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/abhay-v-nikkam-95611a25b/" target="_blank" class="hover:text-cyan-500">
+                    <i class="fab fa-linkedin text-2xl"></i>
+                </a>
+                <a href="mailto:abhayv0324@gmail.com" target="_blank" class="hover:text-green-500">
+                    <i class="fas fa-envelope text-2xl"></i>
+                </a>
+                <a href="https://instagram.com/_abhayx324/" target="_blank" class="hover:text-blue-500">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+            </div>
+
+            <p class="text-md">
+                &copy; 2025 XXXXXXX All Rights Reserved.
+            </p>
+            <p class="text-md">
+                Contact: +91 XXXXXXXXXXXX
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

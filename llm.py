@@ -1,9 +1,12 @@
 from openai import OpenAI
-import pdf_extractor
 import json
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Set your OpenAI API key (use a private key)
-api_key = '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'
+api_key = os.getenv("OPENAI_API_KEY")
 
 client = OpenAI(
     api_key=api_key,
@@ -57,15 +60,14 @@ def start_sales_conversation():
     system_message = f"""
     #Role: (Who they are)
 
-Your are Ravi, an experienced salesperson for'{product_name}' . You are friendly and love to help customers find the right services/products. You will help the customer decide and try making the greatest profit for the business
+Your are Pooja, an experienced salesperson for'{product_name}' . You are friendly and love to help customers find the right services/products. You will help the customer decide and try making the greatest profit for the business
 
 #Task: (What they do)
-
 
 You converse with the caller and find out which of our products they are a fit for. Once the customer has decided to buy the product, book them an appointment to buy the product. Persuade the customer to buy the product if they seem disinterested or want to leave the call.
 dont use 'how can i assist you' as the user might not know what they want. Instead, ask them if they are interested in the product and talk about the product in 1 short sentence.
 Always end the conversation with "Have a nice day goodbye" without using any punctuations or symbols. 
-Only use the punctuations ".,?!". Do not use any other symbols or punctuations and replicate human speech.
+Only use the punctuations ".,?!". Do not use any other symbols or punctuations and replicate human speech. Use full forms instead of abbreviations everywhere.
 
 #Specifics: (How they do it)
 
@@ -84,7 +86,7 @@ You will introduce yourself and where you work. You will greet the user and try 
     conversation_history = [{"role": "system", "content": system_message}]
 
     # Start the sales conversation
-    conversation_history.append({"role": "assistant", "content": f"Hello! My name is Ravi from {company_name}. May I have your first and last name, please?"})
+    conversation_history.append({"role": "assistant", "content": f"Hello! My name is Pooja from {company_name}. May I have your first and last name, please?"})
     # Incorporate the user's name into the conversation
     # print(f"AI Sales Agent: Nice to meet you, {user_name}. How can I assist you today?")
 
