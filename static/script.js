@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!isTranscribing) {
             // Start transcription
-            fetch('http://localhost:5000/start')
+            fetch('http://127.0.0.1:5000/start')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('transcript').textContent = data.message;
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     audioPlayer.pause();
                                 }
 
-                                fetch('http://localhost:5000/transcript', {
+                                fetch('http://127.0.0.1:5000/transcript', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',

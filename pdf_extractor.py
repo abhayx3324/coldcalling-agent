@@ -1,10 +1,12 @@
 import fitz  # PyMuPDF
 from openai import OpenAI
+from dotenv import load_dotenv
+import os
 
-# Set your OpenAI API key
-api_key = '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'
+load_dotenv()
 
-# Initialize OpenAI client
+api_key = os.getenv("OPENAI_API_KEY")
+
 client = OpenAI(
     api_key=api_key,
 )
