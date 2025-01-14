@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startButton.classList.remove('bg-red-500', 'hover:bg-red-700', 'shadow-red-700/50');
             startButton.classList.add('bg-blue-500', 'hover:bg-blue-700', 'shadow-blue-700/50');
             document.querySelector('#status').textContent = 'Not Connected';
-            document.querySelector('#status').classList.remove('text-green-500');
+            document.querySelector('#status').classList.remove('text-green-500', 'text-yellow-500');
             document.querySelector('#status').classList.add('text-red-500');
             isTranscribing = false;
         }
