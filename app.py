@@ -100,9 +100,6 @@ def product():
 def receive_transcript():
     global conversation_history
     
-    if 'conversation_history' not in globals():
-        conversation_history = []
-    
     data = request.get_json()
     
     print(f"{data}")
@@ -119,4 +116,4 @@ def receive_transcript():
     return jsonify({'status': 'success', 'message': 'Transcript received', 'response': ai_response})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=5000)
