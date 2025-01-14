@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let socket;
     let isTranscribing = false;
     let audioStream;
+    let DEEPGRAM_API_KEY;
+
+    fetch('/get-deepgram-key')
+        .then(response => response.json())
+        .then(data => {
+            if (data.deepgram_api_key) {
+                DEEPGRAM_API_KEY = data.deepgram_api_key; // Store the API key
+                console.log('Deepgram API key loaded successfully');
+            } else {
+                console.error('Failed to load Deepgram API key:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching Deepgram API key:', error);
+        });
 
     document.getElementById('startButton').addEventListener('click', () => {
         document.querySelector('#status').textContent = 'Connecting...';
@@ -42,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             mimeType: 'audio/webm',
                         });
 
-                        const accessToken = '3267961fc4555bd0e1e9b7536d3e333c8aade93d'; // Replace with your actual Deepgram API key
+                        const accessToken = DEEPGRAM_API_KEY; // Replace with your actual Deepgram API key
                         const model = 'nova-2';
                         const punctuate = true;
                         const language = 'en-US';
@@ -117,8 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     startButton.textContent = 'Stop Call';
-                    startButton.classList.remove('bg-blue-500', 'hover:bg-blue-700');
-                    startButton.classList.add('bg-red-500', 'hover:bg-red-700');
+                    startButton.classList.remove('bg-blue-500', 'hover:bg-blue-700', 'shadow-blue-700/50');
+                    startButton.classList.add('bg-red-500', 'hover:bg-red-700', 'shadow-red-700/50');
                     isTranscribing = true;
                 })
                 .catch(error => {
@@ -146,8 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('transcript').classList.add('text-gray-500');
 
             startButton.textContent = 'Start Call';
-            startButton.classList.remove('bg-red-500', 'hover:bg-red-700');
-            startButton.classList.add('bg-blue-500', 'hover:bg-blue-700');
+            startButton.classList.remove('bg-red-500', 'hover:bg-red-700', 'shadow-red-700/50');
+            startButton.classList.add('bg-blue-500', 'hover:bg-blue-700', 'shadow-blue-700/50');
             document.querySelector('#status').textContent = 'Not Connected';
             document.querySelector('#status').classList.remove('text-green-500');
             document.querySelector('#status').classList.add('text-red-500');
@@ -156,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function speakText(text) {
-        const accessToken = '3267961fc4555bd0e1e9b7536d3e333c8aade93d';
+        const accessToken = DEEPGRAM_API_KEY;
         const ttsUrl = 'https://api.deepgram.com/v1/speak?model=aura-luna-en';
 
         fetch(ttsUrl, {

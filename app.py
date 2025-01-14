@@ -1,14 +1,16 @@
 import json
 import os
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for
 from flask_cors import CORS  # Import CORS
 from pdf_extractor import extract_text_from_pdf, summarize_relevant_information
 from llm import start_sales_conversation, get_ai_response
+from dotenv import load_dotenv
+import os
 
-
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS globally for all routes
+CORS(app)
 
 UPLOAD_FOLDER = 'UPLOADS'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -20,37 +22,52 @@ JSON_FILE_PATH = 'product_data.json'
 def favicon():
     return send_from_directory(app.static_folder, 'favicon.ico')
 
+@app.route('/get-deepgram-key', methods=['GET'])
+def get_deepgram_key():
+    DEEPGRAM_API_KEY = os.getenv('DEEPGRAM_API_KEY')
+    if not DEEPGRAM_API_KEY:
+        return jsonify({'error': 'Deepgram API key not found'}), 500
+    return jsonify({'deepgram_api_key': DEEPGRAM_API_KEY})
+
 @app.route('/save', methods=['POST'])
 def handle_product():
-    company_name = request.form.get('companyName')
-    product_name = request.form.get('productName')
-    product_description = request.form.get('productDescription')
+    try:
+        # Retrieve form data
+        company_name = request.form.get('companyName')
+        product_name = request.form.get('productName')
+        product_description = request.form.get('productDescription')
+        pdf_file = request.files.get('pdfUpload')
 
-    pdf_file = request.files.get('pdfUpload')
+        # Validate required fields
+        if not company_name or not product_name:
+            return jsonify({'message': 'Company Name and Product Name are required!'}), 400
 
-    if pdf_file:
-        pdf_filename = "product.pdf"
-        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_filename)
-        pdf_file.save(pdf_path)
-
-        pdf_text = extract_text_from_pdf(pdf_path)
-        
-        print(summarize_relevant_information(pdf_path))
-        
-    else:
+        # Handle PDF upload if provided
         pdf_text = ''
+        if pdf_file:
+            pdf_filename = "product.pdf"
+            pdf_path = os.path.join(UPLOAD_FOLDER, pdf_filename)
+            pdf_file.save(pdf_path)
+            pdf_text = extract_text_from_pdf(pdf_path)
+            print(summarize_relevant_information(pdf_path))
 
-    product_data = {
-        'companyName': company_name,
-        'productName': product_name,
-        'productDescription': product_description,
-        'pdfText': pdf_text  # Store the path to the uploaded PDF
-    }
+        # Prepare product data
+        product_data = {
+            'companyName': company_name,
+            'productName': product_name,
+            'productDescription': product_description,
+            'pdfText': pdf_text
+        }
 
-    with open(JSON_FILE_PATH, 'w') as json_file:
+        # Save product data to JSON file
+        with open(JSON_FILE_PATH, 'w') as json_file:
             json.dump(product_data, json_file, indent=4)
 
-    return jsonify({'message': 'Product information saved successfully!', 'productData': product_data}), 200
+        # Redirect to /talk if successful
+        return redirect(url_for('talk'))
+
+    except Exception as e:
+        return jsonify({'message': f'An error occurred: {str(e)}'}), 500
 
 @app.route('/start', methods=['GET'])
 def start_conversation():
