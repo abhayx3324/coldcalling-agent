@@ -116,4 +116,4 @@ def receive_transcript():
     return jsonify({'status': 'success', 'message': 'Transcript received', 'response': ai_response})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
