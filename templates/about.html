@@ -8,77 +8,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center bg-stone-950 text-gray-200 min-h-screen min-w-full scroll-smooth flex flex-col" style="font-family: 'Work Sans', sans-serif; background-image: url('{{ url_for('static', filename='homebg.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
-    <div id="navbar" class="fixed top-0 left-0 w-full py-8 px-8 mb-2 flex justify-between backdrop-blur-sm z-50">
-        <a href="{{ url_for('index') }}" class="text-3xl inline font-bold"> CALL-E </a>
+<body class="flex items-center justify-center text-gray-200 min-h-screen min-w-full scroll-smooth flex flex-col" style="font-family: 'Work Sans', sans-serif; background-image: url('/static/homebg.png'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div id="navbar" class="fixed top-0 left-0 w-full py-8 px-8 flex justify-between backdrop-blur-sm z-50">
+        <a href="{{ url_for('index') }}" class="text-3xl inline font-bold">CALL-E</a>
         <div class="flex space-x-4">
-            <a href="{{ url_for('index') }}" 
-            class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">
-                Home
-            </a>
-            <a href="{{ url_for('about') }}" 
-            class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">
-                About
-            </a>
+            <a href="{{ url_for('index') }}" class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">Home</a>
+            <a href="{{ url_for('about') }}" class="text-center font-semibold w-24 h-10 flex items-center justify-center px-4 py-2 rounded-md hover:bg-stone-800 hover:text-gray-200">About</a>
         </div>
     </div>
 
-    <div class="mt-28 mb-4 p-4 text-left bg-stone-800 min-h-14 w-2/3 rounded-xl text-stone-200 space-y-2">
-        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
-        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+    <div class="mt-28 mb-2 p-8 space-y-4 text-left bg-stone-800 min-h-14 w-2/3 rounded-xl text-stone-200 space-y-2 mb-8">
+        <div>
+            <h1 class="text-4xl font-bold text-left text-stone-100">CALL-E: AI Voice Agent</h1>
+            <hr class="my-2 border-stone-600 rounded">
+            <p class="text-left text-stone-200">CALL-E is an advanced AI voice agent designed to facilitate interactive, conversational, and persuasive product sales. It integrates state-of-the-art technologies for speech-to-text (STT), text-to-speech (TTS), and natural language processing (NLP) to provide a seamless conversational experience.</p>
+        </div>
 
-        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
-        <ul class="list-disc list-inside mb-4">
-            <li class="text-stone-300">Easy to read and write</li>
-            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
-            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
-        </ul>
+        <hr class="my-4 border-stone-600 border-4 rounded">
 
-        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
-        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
-        <p class="text-stone-200 mb-4">And a code block:</p>
+        <div class="mt-4">
+            <h2 class="text-3xl font-semibold mb-2">Features</h2>
+            <hr class="my-2 border-stone-600 rounded">
+            <div class="space-y-6">
+                <ol class="list-decimal ml-6 text-stone-200 space-y-2">
+                    <li><strong>Dynamic Web Scraping: </strong>
+                        <ul class="list-disc ml-6 text-stone-200">
+                            <li>Accepts product name, company name, and a brief product description from the user.</li>
+                            <li>Performs web scraping using OpenAI GPT Turbo 3.5 to gather relevant information about the product online.
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Conversational Selling:</strong>
+                        <ul class="list-disc ml-6 text-stone-200">
+                            <li>Engages users in a conversation on a web platform.</li>
+                            <li>Uses a carefully crafted prompt and web-scraped data to simulate a real-time sales experience.</li>
+                        </ul>
+                    </li>
+                    <li><strong>High-Quality Speech Processing:</strong>
+                        <ul class="list-disc ml-6 text-stone-200">
+                            <li>Converts spoken user input into text using Deepgram’s STT capabilities.</li>
+                            <li>Generates natural, expressive responses with OpenAI GPT Turbo 3.5.</li>
+                            <li>Delivers responses via Deepgram’s TTS system for an engaging auditory experience.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Adaptive Interrupt Handling:</strong>
+                        <ul class="list-disc ml-6 text-stone-200">
+                            <li>Can handle interruptions during the conversation and adapt accordingly to ensure a smooth and natural user experience.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
-        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+        <hr class="my-4 border-stone-600 border-4 rounded">
 
-        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
-        <ul class="list-disc list-inside mb-4">
-            <li class="text-stone-300">Easy to read and write</li>
-            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
-            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
-        </ul>
+        <div class="mt-4">
+            <h2 class="text-3xl font-semibold mb-2">How It Works</h2>
+            <hr class="my-2 border-stone-600 rounded">
+            <ol class="list-decimal ml-6 text-stone-200 space-y-2">
+                <li><strong>User Input:</strong>
+                    <ul class="list-disc ml-6 text-stone-200">
+                        <li>The user provides the product name, company name, and a brief description of the product.</li>
+                    </ul>
+                </li>
+                <li><strong>Web Scraping:</strong>
+                    <ul class="list-disc ml-6 text-stone-200">
+                        <li>CALL-E uses OpenAI GPT Turbo 3.5 to search the web and collect relevant product information.</li>
+                    </ul>
+                </li>
+                <li><strong>Conversation:</strong>
+                    <ul class="list-disc ml-6 text-stone-200">
+                        <li>The user initiates a conversation on the website.</li>
+                        <li>CALL-E, powered by the collected web data and a refined conversational prompt, engages in a real-time discussion aimed at persuading the user to purchase the product.</li>
+                    </ul>
+                </li>
+                <li><strong>Voice Interaction:</strong>
+                    <ul class="list-disc ml-6 text-stone-200">
+                        <li>User speech is converted to text with Deepgram STT. Responses are crafted by OpenAI GPT Turbo 3.5 and delivered through Deepgram TTS.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
 
-        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
-        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
-        <p class="text-stone-200 mb-4">And a code block:</p>
+        <hr class="my-4 border-stone-600 border-4 rounded">
 
-        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
-        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+        <div class="mt-4">
+            <h2 class="text-3xl font-semibold mb-2">Tech Stack</h2>
+            <hr class="my-2 border-stone-600 rounded">
+            <ul class="list-disc ml-6 text-stone-200 space-y-2">
+                <li><strong>STT:</strong> <a href="https://deepgram.com" class="text-blue-400 hover:underline">Deepgram</a> for speech-to-text processing.</li>
+                <li><strong>LLM:</strong> <a href="https://openai.com" class="text-blue-400 hover:underline">OpenAI GPT Turbo 3.5</a> for natural language understanding and response generation.</li>
+                <li><strong>TTS:</strong> <a href="https://deepgram.com" class="text-blue-400 hover:underline">Deepgram</a> for text-to-speech synthesis.</li>
+                <li><strong>Web Framework:</strong> Flask for backend services.</li>
+                <li><strong>Frontend:</strong> Tailwind CSS for responsive and elegant user interfaces.</li>
+                <li><strong>Programming Language:</strong> Python 3.12.7 for backend logic and integration.</li>
+            </ul>
+        </div>
 
-        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
-        <ul class="list-disc list-inside mb-4">
-            <li class="text-stone-300">Easy to read and write</li>
-            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
-            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
-        </ul>
+        <hr class="my-4 border-stone-600 border-4 rounded">
 
-        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
-        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
-        <p class="text-stone-200 mb-4">And a code block:</p>
+        <div class="mt-4">
+            <h2 class="text-3xl font-semibold mb-2">Installation and Setup</h2>
+            <hr class="my-2 border-stone-600 rounded">
+            <ol class="list-decimal ml-6 text-stone-200 space-y-2">
+                <li>Clone the repository:
+                    <pre class="bg-stone-700 p-4 m-2 rounded text-sm text-stone-200 overflow-auto">git clone https://github.com/symelbak/coldcalling-agent
+cd coldcalling-agent</pre>
+                </li>
+                <li>Install dependencies:
+                    <pre class="bg-stone-700 p-4 m-2 rounded text-sm text-stone-200 overflow-auto">pip install -r requirements.txt</pre>
+                </li>
+                <li>Configure API keys:
+                    <pre class="bg-stone-700 p-4  m-2 rounded text-sm text-stone-200 overflow-auto">DEEPGRAM_API_KEY=your_deepgram_api_key
+OPENAI_API_KEY=your_openai_api_key</pre>
+                </li>
+                <li>Run the Flask server:
+                    <pre class="bg-stone-700 p-4  m-2 rounded text-sm text-stone-200 overflow-auto">python app.py</pre>
+                </li>
+                <li>Access the web interface:
+                    <p>Open your browser and navigate to <code class="bg-stone-700 px-2 rounded">http://127.0.0.1:5000</code>.</p>
+                </li>
+            </ol>
+        </div>
 
-        <h1 class="text-4xl font-bold text-emerald-400 mb-4">Welcome to My Blog</h1>
-        <p class="text-stone-200 mb-4">This is a <strong class="font-bold">sample blog post</strong> written in Markdown. Here, I'll demonstrate how to use Markdown to create structured content.</p>
+        <hr class="my-4 border-stone-600 border-4 rounded">
 
-        <h2 class="text-2xl font-semibold text-emerald-300 mb-2">Features of Markdown</h2>
-        <ul class="list-disc list-inside mb-4">
-            <li class="text-stone-300">Easy to read and write</li>
-            <li class="text-stone-300">Supports <strong class="font-bold">bold</strong>, <em class="italic">italic</em>, and <code class="bg-stone-700 px-1 rounded text-stone-200">code</code> formatting</li>
-            <li class="text-stone-300">Creates lists, links, and images effortlessly</li>
-        </ul>
-
-        <h3 class="text-xl font-semibold text-emerald-200 mb-2">Code Example</h3>
-        <p class="text-stone-200 mb-4">Here's an example of inline code: <code class="bg-stone-700 px-1 rounded text-stone-200">console.log("Hello, World!")</code>.</p>
-        <p class="text-stone-200 mb-4">And a code block:</p>
+        <div class="mt-4">
+            <h2 class="text-3xl font-semibold mb-2">Future Enhancements</h2>
+            <hr class="my-2 border-stone-600 rounded">
+            <ul class="list-disc ml-6 text-stone-200 space-y-2">
+                <li>Multi-language support for global accessibility.</li>
+                <li>Improved scraping algorithms for more accurate and reliable product information.</li>
+                <li>Integration with e-commerce platforms for direct product purchases.</li>
+                <li>Reduce latency for faster and more responsive interactions.</li>
+                <li>AI-driven sentiment analysis to tailor responses based on user mood.</li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>
