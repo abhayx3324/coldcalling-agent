@@ -32,6 +32,11 @@ CALL-E is an advanced AI voice agent designed to facilitate interactive, convers
 Visit the live website to test CALL-E in action:
 [Live Demo](https://wandering-nerissa-aebay-522e1a60.koyeb.app/)
 
+docker image:
+```
+docker run -it -p 5000:5000 symelbak/call-e:latest
+```
+
 ## How It Works
 
 1. **User Input:**
