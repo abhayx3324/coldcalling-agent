@@ -92,9 +92,6 @@ You will introduce yourself and where you work. You will greet the user and try 
 
     return conversation_history
 
-
-
-
 def get_ai_response(user_input, conversation_history):
     conversation_history.append({"role": "user", "content": user_input})
 
